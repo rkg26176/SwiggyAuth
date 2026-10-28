@@ -1,0 +1,651 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, interactive-widget=resizes-content">
+    <title>GBX SWIGGY AUTH</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        html, body {
+            height: 100%;
+            background-color: #f4f5f7;
+            color: #1c1c1e;
+            display: flex;
+            justify-content: center;
+        }
+
+        .phone-container {
+            width: 100%;
+            max-width: 420px;
+            min-height: 100vh;
+            background: #ffffff;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            box-shadow: 0 0 25px rgba(0,0,0,0.08);
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 24px 20px 10px 20px;
+        }
+
+        .header h1 {
+            color: #fc8019;
+            font-size: 26px;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .icon-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+        }
+
+        .icon-btn svg {
+            width: 25px;
+            height: 25px;
+        }
+
+        .action-bar {
+            display: flex;
+            gap: 10px;
+            padding: 12px 20px 0 20px;
+        }
+
+        .main-btn {
+            flex: 1;
+            padding: 12px 14px;
+            border-radius: 10px;
+            border: none;
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            transition: opacity 0.2s;
+        }
+
+        .main-btn:active {
+            opacity: 0.8;
+        }
+
+        .btn-extractor {
+            background-color: #fc8019;
+            color: #ffffff;
+        }
+
+        .btn-saved {
+            background-color: #f2f2f7;
+            color: #333333;
+            border: 1px solid #e5e5ea;
+        }
+
+        .content {
+            flex: 1;
+            padding: 40px 24px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+
+        .warning-icon {
+            font-size: 38px;
+            color: #ff9800;
+            margin-bottom: 12px;
+            font-weight: 300;
+        }
+
+        .error-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: #000;
+            margin-bottom: 6px;
+        }
+
+        .error-sub {
+            font-size: 14px;
+            color: #8e8e93;
+            margin-bottom: 24px;
+        }
+
+        .app-works-text {
+            font-size: 14px;
+            color: #636366;
+            margin-bottom: 20px;
+        }
+
+        .mode-box {
+            text-align: left;
+            width: 100%;
+            margin-bottom: 22px;
+            font-size: 13px;
+            line-height: 1.5;
+            color: #636366;
+        }
+
+        .mode-title {
+            font-weight: 700;
+            color: #48484a;
+            margin-bottom: 4px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 13.5px;
+        }
+
+        .mode-box ul {
+            list-style: none;
+            padding-left: 18px;
+        }
+
+        .mode-box ul li {
+            position: relative;
+            margin-bottom: 2px;
+        }
+
+        .mode-box ul li::before {
+            content: "•";
+            position: absolute;
+            left: -12px;
+            color: #8e8e93;
+        }
+
+        .footer-note {
+            font-size: 13px;
+            color: #8e8e93;
+            margin-top: 15px;
+            text-align: center;
+        }
+
+        .version {
+            padding: 16px;
+            text-align: center;
+            font-size: 12px;
+            color: #c7c7cc;
+        }
+
+        /* Mobile Keyboard Safe Popups */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.45);
+            display: none;
+            justify-content: center;
+            align-items: flex-end;
+            z-index: 1000;
+            overflow-y: auto;
+        }
+
+        .modal-sheet {
+            width: 100%;
+            max-width: 420px;
+            background: #ffffff;
+            border-top-left-radius: 20px;
+            border-top-right-radius: 20px;
+            padding: 20px 20px 25px 20px;
+            max-height: 90dvh;
+            overflow-y: auto;
+            box-shadow: 0 -4px 16px rgba(0,0,0,0.1);
+            animation: slideUp 0.2s ease-out;
+            margin-bottom: 0;
+            transition: transform 0.2s ease;
+        }
+
+        @keyframes slideUp {
+            from { transform: translateY(100%); }
+            to { transform: translateY(0); }
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .modal-header h2 {
+            font-size: 17px;
+            font-weight: 700;
+            color: #111;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 22px;
+            cursor: pointer;
+            color: #8e8e93;
+        }
+
+        .form-group {
+            margin-bottom: 14px;
+        }
+
+        .form-label {
+            font-size: 12px;
+            font-weight: 600;
+            color: #636366;
+            margin-bottom: 6px;
+            display: block;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 12px 14px;
+            border: 1.5px solid #e5e5ea;
+            border-radius: 10px;
+            font-size: 16px;
+            outline: none;
+            background: #fbfbfd;
+        }
+
+        .form-input:focus {
+            border-color: #fc8019;
+            background: #fff;
+        }
+
+        .status-badge {
+            font-size: 12px;
+            color: #fc8019;
+            font-weight: 600;
+            margin-top: 5px;
+            min-height: 16px;
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 13px;
+            border-radius: 10px;
+            background: #fc8019;
+            border: none;
+            color: #ffffff;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            margin-top: 6px;
+        }
+
+        .submit-btn:disabled {
+            background: #d1d1d6;
+            cursor: not-allowed;
+        }
+
+        .output-box {
+            position: relative;
+            background: #1c1c1e;
+            color: #e5e5ea;
+            border-radius: 10px;
+            padding: 12px;
+            margin-top: 15px;
+            font-family: monospace;
+            font-size: 11px;
+            white-space: pre-wrap;
+            word-break: break-all;
+            max-height: 180px;
+            overflow-y: auto;
+            display: none;
+        }
+
+        .copy-float-btn {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            background: #fc8019;
+            color: #ffffff;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 6px;
+            font-size: 11px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .saved-item {
+            border: 1px solid #e5e5ea;
+            border-radius: 10px;
+            padding: 12px;
+            margin-bottom: 10px;
+            background: #ffffff;
+        }
+
+        .saved-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .saved-phone {
+            font-size: 14px;
+            font-weight: 700;
+            color: #1c1c1e;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 6px;
+        }
+
+        .btn-small {
+            padding: 5px 10px;
+            font-size: 11px;
+            border-radius: 6px;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .btn-copy-small {
+            background: #fc8019;
+            color: #ffffff;
+        }
+
+        .btn-del-small {
+            background: #ff3b30;
+            color: #ffffff;
+        }
+
+        .empty-text {
+            text-align: center;
+            color: #8e8e93;
+            font-size: 13px;
+            padding: 24px 0;
+        }
+    </style>
+</head>
+<body>
+
+<div class="phone-container">
+    <header class="header">
+        <h1>GBX SWIGGY AUTH</h1>
+        <div class="header-actions">
+            <a href="https://gbx-render.onrender.com/view/GBX/OFFICIAL" target="_blank" class="icon-btn">
+                <svg viewBox="0 0 24 24" fill="#0088cc">
+                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.68 1.03-.58.05-1.02-.38-1.58-.75-.88-.58-1.38-.94-2.23-1.5-.99-.65-.35-1.01.22-1.59.15-.15 2.71-2.48 2.76-2.69a.2.2 0 00-.05-.18c-.06-.05-.14-.03-.21-.02-.09.02-1.49.95-4.22 2.79-.4.27-.76.41-1.08.4-.36-.01-1.04-.2-1.55-.37-.63-.2-1.12-.31-1.08-.66.02-.18.27-.36.75-.55 2.92-1.27 4.86-2.11 5.83-2.51 2.78-1.16 3.35-1.36 3.73-1.36.08 0 .27.02.39.12.1.08.13.19.14.27-.01.06.01.24 0 .38z"/>
+                </svg>
+            </a>
+            <button class="icon-btn" onclick="location.reload()">
+                <svg viewBox="0 0 24 24" fill="none" stroke="#fc8019" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.19"/>
+                </svg>
+            </button>
+        </div>
+    </header>
+
+    <div class="action-bar">
+        <button class="main-btn btn-extractor" onclick="openExtractorModal()">
+            ⚡ OTP to Auth Extractor
+        </button>
+        <button class="main-btn btn-saved" onclick="openSavedModal()">
+            📂 Saved Auth
+        </button>
+    </div>
+
+    <main class="content">
+        <div class="warning-icon">!</div>
+        <div class="error-title">Error</div>
+        <div class="error-sub">No access method available.</div>
+        <div class="app-works-text">This app works in two modes:</div>
+        <div class="mode-box">
+            <div class="mode-title">📱 CLONER MODE (Recommended):</div>
+            <ul>
+                <li>Install a cloner app (Dual Space, Parallel Space, etc.)</li>
+                <li>Clone this app into the cloner</li>
+                <li>Clone Swiggy into the same cloner</li>
+                <li>Open this app from within the cloner</li>
+            </ul>
+        </div>
+        <div class="mode-box">
+            <div class="mode-title">🔧 SHIZUKU MODE (Advanced):</div>
+            <ul>
+                <li>Install Shizuku app</li>
+                <li>Start Shizuku service (requires wireless ADB or PC)</li>
+                <li>Grant permission to this app</li>
+                <li>Restart this app</li>
+            </ul>
+        </div>
+        <div class="footer-note">Cloner mode is easier and doesn't require ADB!</div>
+    </main>
+
+    <footer class="version">v1.1-damie</footer>
+</div>
+
+<!-- Modal 1: OTP to Auth Extractor -->
+<div class="modal-overlay" id="extractorModal">
+    <div class="modal-sheet" id="extractorSheet">
+        <div class="modal-header">
+            <h2>OTP to Auth Extractor</h2>
+            <button class="close-btn" onclick="closeExtractorModal()">&times;</button>
+        </div>
+        <div class="form-group">
+            <label class="form-label">Phone Number (10 Digits)</label>
+            <input type="tel" id="mobileInput" class="form-input" placeholder="Enter mobile number" maxlength="10" oninput="handleMobileInput()">
+            <div class="status-badge" id="otpStatus"></div>
+        </div>
+        <div class="form-group" id="otpGroup" style="display: none;">
+            <label class="form-label">Enter OTP</label>
+            <input type="number" id="otpInput" class="form-input" placeholder="Enter OTP code" maxlength="6">
+            <button class="submit-btn" id="submitBtn" onclick="handleVerifyOtp()">Submit & Extract Auth</button>
+        </div>
+        <div class="output-box" id="outputArea">
+            <button class="copy-float-btn" onclick="copyResult()">Copy</button>
+            <code id="jsonOutput"></code>
+        </div>
+    </div>
+</div>
+
+<!-- Modal 2: Saved Auth -->
+<div class="modal-overlay" id="savedModal">
+    <div class="modal-sheet">
+        <div class="modal-header">
+            <h2>Saved Auth Sessions</h2>
+            <button class="close-btn" onclick="closeSavedModal()">&times;</button>
+        </div>
+        <div id="savedListContainer"></div>
+    </div>
+</div>
+
+<script>
+    function scrollIntoViewKeyboard(element) {
+        setTimeout(() => {
+            element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }, 250);
+    }
+
+    const mobileInput = document.getElementById('mobileInput');
+    const otpInput = document.getElementById('otpInput');
+
+    mobileInput.addEventListener('focus', () => scrollIntoViewKeyboard(mobileInput));
+    otpInput.addEventListener('focus', () => scrollIntoViewKeyboard(otpInput));
+
+    // Handle Visual Viewport (Mobile Keyboards)
+    if (window.visualViewport) {
+        window.visualViewport.addEventListener('resize', () => {
+            const currentModal = document.querySelector('.modal-overlay[style*="display: flex"]');
+            if (currentModal) {
+                currentModal.style.height = `${window.visualViewport.height}px`;
+            }
+        });
+    }
+
+    function openExtractorModal() { 
+        const m = document.getElementById('extractorModal');
+        m.style.display = 'flex'; 
+        if (window.visualViewport) m.style.height = `${window.visualViewport.height}px`;
+        mobileInput.focus(); 
+    }
+    
+    function closeExtractorModal() { 
+        document.getElementById('extractorModal').style.display = 'none'; 
+    }
+    
+    function openSavedModal() { 
+        const m = document.getElementById('savedModal');
+        m.style.display = 'flex'; 
+        if (window.visualViewport) m.style.height = `${window.visualViewport.height}px`;
+        renderSavedSessions(); 
+    }
+    
+    function closeSavedModal() { 
+        document.getElementById('savedModal').style.display = 'none'; 
+    }
+
+    window.onclick = function(e) {
+        if (e.target.classList.contains('modal-overlay')) e.target.style.display = 'none';
+    };
+
+    async function handleMobileInput() {
+        const input = document.getElementById('mobileInput');
+        const status = document.getElementById('otpStatus');
+        const val = input.value.replace(/\D/g, '');
+        input.value = val;
+
+        if (val.length === 10) {
+            status.textContent = "Sending real OTP to device...";
+            try {
+                const res = await fetch("/api/send_otp", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ mobile: val })
+                });
+                const data = await res.json();
+                if (data.status === "success") {
+                    status.textContent = "✓ OTP Sent successfully to +91 " + val;
+                    document.getElementById('otpGroup').style.display = 'block';
+                    otpInput.focus();
+                    scrollIntoViewKeyboard(otpInput);
+                } else {
+                    status.textContent = "Error: " + data.message;
+                }
+            } catch (err) {
+                status.textContent = "Failed to connect to backend server!";
+            }
+        } else {
+            status.textContent = "";
+            document.getElementById('otpGroup').style.display = 'none';
+            document.getElementById('outputArea').style.display = 'none';
+        }
+    }
+
+    async function handleVerifyOtp() {
+        const otp = otpInput.value.trim();
+        const mobile = mobileInput.value.trim();
+        const submitBtn = document.getElementById('submitBtn');
+
+        if (otp.length < 4) { alert("Enter valid OTP"); return; }
+
+        submitBtn.disabled = true;
+        submitBtn.textContent = "Verifying...";
+
+        try {
+            const res = await fetch("/api/verify_otp", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ mobile: mobile, otp: otp })
+            });
+            const result = await res.json();
+            submitBtn.disabled = false;
+            submitBtn.textContent = "Submit & Extract Auth";
+
+            if (result.status === "success") {
+                const jsonStr = JSON.stringify(result.data, null, 2);
+                document.getElementById('jsonOutput').textContent = jsonStr;
+                document.getElementById('outputArea').style.display = 'block';
+                saveSession(mobile, result.data);
+                scrollIntoViewKeyboard(document.getElementById('outputArea'));
+            } else {
+                alert("Verification failed: " + result.message);
+            }
+        } catch (err) {
+            submitBtn.disabled = false;
+            submitBtn.textContent = "Submit & Extract Auth";
+            alert("Connection error during OTP verification!");
+        }
+    }
+
+    function copyResult() {
+        navigator.clipboard.writeText(document.getElementById('jsonOutput').textContent).then(() => {
+            alert("Auth session copied to clipboard!");
+        });
+    }
+
+    function getStoredSessions() {
+        try { return JSON.parse(localStorage.getItem('gbx_swiggy_sessions')) || {}; } catch { return {}; }
+    }
+
+    function saveSession(mobile, data) {
+        const sessions = getStoredSessions();
+        sessions[mobile] = data;
+        localStorage.setItem('gbx_swiggy_sessions', JSON.stringify(sessions));
+    }
+
+    function deleteSession(mobile) {
+        const sessions = getStoredSessions();
+        delete sessions[mobile];
+        localStorage.setItem('gbx_swiggy_sessions', JSON.stringify(sessions));
+        renderSavedSessions();
+    }
+
+    function copySessionData(mobile) {
+        const sessions = getStoredSessions();
+        if (sessions[mobile]) {
+            navigator.clipboard.writeText(JSON.stringify(sessions[mobile], null, 2)).then(() => {
+                alert("Session for " + mobile + " copied!");
+            });
+        }
+    }
+
+    function renderSavedSessions() {
+        const container = document.getElementById('savedListContainer');
+        const sessions = getStoredSessions();
+        const keys = Object.keys(sessions);
+        if (keys.length === 0) {
+            container.innerHTML = '<div class="empty-text">No saved sessions found.</div>';
+            return;
+        }
+        let html = '';
+        keys.forEach(mobile => {
+            html += `
+                <div class="saved-item">
+                    <div class="saved-row">
+                        <span class="saved-phone">+91 ${mobile}</span>
+                        <div class="btn-group">
+                            <button class="btn-small btn-copy-small" onclick="copySessionData('${mobile}')">Copy</button>
+                            <button class="btn-small btn-del-small" onclick="deleteSession('${mobile}')">Delete</button>
+                        </div>
+                    </div>
+                </div>
+            `;
+        });
+        container.innerHTML = html;
+    }
+</script>
+
+</body>
+</html>
